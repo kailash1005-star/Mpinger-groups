@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #050505;
+  --foreground: #ffffff;
 }
 
 @theme inline {
@@ -12,15 +12,96 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scrollbar-width: none; /* Hide scrollbars for Firefox */
+  -ms-overflow-style: none; /* Hide scrollbars for IE/Edge */
+}
+
+/* Hide scrollbars for Chrome/Safari */
+html::-webkit-scrollbar {
+  display: none;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Smooth selection colors */
+::selection {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: inherit;
+}
+
+/* Brand gateway buttons — soft breathing glow in the brand accent color */
+.brand-btn {
+  --brand: #000;
+  --brand-glow: rgba(0, 0, 0, 0.35);
+  --brand-sheen: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.35);
+  animation: brand-glow 3.6s ease-in-out infinite;
+}
+
+.brand-btn:hover,
+.brand-btn:focus-visible {
+  box-shadow:
+    0 16px 40px -12px rgba(0, 0, 0, 0.35),
+    0 0 0 3px var(--brand-sheen),
+    0 0 32px 4px var(--brand-glow);
+  animation-play-state: paused;
+}
+
+@keyframes brand-glow {
+  0%,
+  100% {
+    box-shadow:
+      0 12px 32px -12px rgba(0, 0, 0, 0.35),
+      0 0 0 0 transparent;
+  }
+  50% {
+    box-shadow:
+      0 12px 32px -12px rgba(0, 0, 0, 0.35),
+      0 0 26px 3px var(--brand-glow);
+  }
+}
+
+/* Periodic sheen that sweeps across the pill */
+.brand-sheen {
+  background: linear-gradient(
+    115deg,
+    transparent 35%,
+    var(--brand-sheen) 50%,
+    transparent 65%
+  );
+  transform: translateX(-130%);
+  animation: brand-sheen 4.2s ease-in-out infinite;
+}
+
+@keyframes brand-sheen {
+  0% {
+    transform: translateX(-130%);
+  }
+  60%,
+  100% {
+    transform: translateX(130%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-btn {
+    animation: none;
+  }
+  .brand-sheen {
+    animation: none;
+    transform: translateX(-130%);
+  }
 }
