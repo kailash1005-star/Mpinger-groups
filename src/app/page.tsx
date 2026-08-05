@@ -7,6 +7,7 @@ import {
   type BrandLink,
   type SectionTheme,
 } from "@/components/ScrollVideoSection";
+import { ScrollRail } from "@/components/ScrollRail";
 
 interface SectionData {
   id: string;
@@ -135,6 +136,10 @@ const sectionsData: SectionData[] = [
     align: "center",
   },
 ];
+
+// Stable reference for the rail — it measures section offsets in an effect
+// keyed on this array, so a new one per render would re-measure in a loop.
+const railSections = sectionsData.map(({ id, navLabel }) => ({ id, navLabel }));
 
 // Check if a hex background color is dark (for glassy header/nav surfaces)
 const isDarkColor = (hex: string) => {
@@ -270,41 +275,16 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Floating Side Dot Navigation Indicator */}
-      <div className="fixed right-6 md:right-10 top-1/2 -translate-y-1/2 z-40 flex flex-col gap-4">
-        {sectionsData.map((section, idx) => (
-          <button
-            key={section.id}
-            onClick={() => scrollToSection(section.id)}
-            className="group relative flex items-center justify-end"
-            style={{
-              color: activeSection === idx ? activeTheme.accent : activeTheme.text,
-            }}
-          >
-            {/* Tooltip text label */}
-            <span className="absolute right-8 text-[10px] uppercase tracking-widest font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
-              {section.navLabel}
-            </span>
-
-            {/* Indicator Dot */}
-            <div
-              className={`w-3 h-3 rounded-full border transition-all duration-500 flex items-center justify-center ${
-                activeSection === idx
-                  ? "border-current scale-125"
-                  : "border-transparent group-hover:scale-110"
-              }`}
-            >
-              <div
-                className={`w-1.5 h-1.5 rounded-full bg-current transition-all duration-500 ${
-                  activeSection === idx
-                    ? "opacity-100"
-                    : "opacity-40 group-hover:opacity-80"
-                }`}
-              />
-            </div>
-          </button>
-        ))}
-      </div>
+      {/* Draggable scroll rail. Replaces the previous dot indicator: it keeps
+          the same section markers, but the handle can be dragged (or pressed
+          anywhere along the rail) to travel the page directly — the native
+          scrollbar is hidden site-wide, so this is the only direct control. */}
+      <ScrollRail
+        sections={railSections}
+        activeIndex={activeSection}
+        color={activeTheme.text}
+        accent={activeTheme.accent}
+      />
 
       {/* Landing Page Content Sections */}
       <main className="w-full flex flex-col">
