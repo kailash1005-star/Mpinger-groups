@@ -490,10 +490,16 @@ export const ScrollVideoSection: React.FC<ScrollVideoSectionProps> = ({
         </motion.div>
 
         {/* Content overlay — open typography over the video, no card.
-            Hero is anchored toward the lower third instead of dead-center:
-            a large, open expanse of the shot reads above the headline, so
-            the frame feels used rather than reduced to one small centered
-            cluster. Other sections stay vertically centered, unchanged.
+            From `sm` up the hero is anchored toward the lower third instead of
+            dead-center: a large, open expanse of the shot reads above the
+            headline, so the frame feels used rather than reduced to one small
+            centered cluster. Other sections stay vertically centered.
+
+            On phones that anchoring backfires. The copy is nearly as tall as
+            the frame, so bottom-aligning banks every pixel of slack — around
+            215px on a 390x844 viewport — into one dead gap under the header
+            while the text crowds the lower edge. Centering there splits the
+            slack and lifts the block by roughly half of it.
 
             Rendered unconditionally — this used to be gated on `isInView`,
             which meant the served HTML contained no headings and no body copy
@@ -503,7 +509,7 @@ export const ScrollVideoSection: React.FC<ScrollVideoSectionProps> = ({
             present while the reveal still animates on scroll. */}
         <div
             className={`absolute inset-0 z-20 pointer-events-none flex ${
-              isHero ? "items-end" : "items-center"
+              isHero ? "items-center sm:items-end" : "items-center"
             } ${justify} px-6 sm:px-10 md:px-16 lg:px-24 xl:px-28 ${
               // Top padding must always clear the fixed 80px header, otherwise
               // tall copy slides underneath it. Bottom padding is trimmed to
