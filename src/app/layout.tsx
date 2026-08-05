@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MP Group — Engineering, Sustainability & AI-Native Technology",
+  title: "Mpinger Groups — Engineering, Sustainability & AI-Native Technology",
   description:
     "An Indo-German group of companies — precision engineering (mpinger), sustainable coco substrates (Kokosflora), compact construction machines (Hanox), and enterprise AI consulting (mpasys).",
 };

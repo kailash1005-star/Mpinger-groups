@@ -41,7 +41,7 @@ const sectionsData: SectionData[] = [
   {
     id: "kokosflora",
     navLabel: "Kokosflora",
-    videoSrc: "/videos/section-2.mp4",
+    videoSrc: "/videos/kokosflora-coir-lifecycle.mp4",
     backgroundColor: "#d6c0a3",
     theme: {
       text: "#2b2014",
@@ -192,26 +192,26 @@ export default function Home() {
         className={`fixed top-0 left-0 right-0 z-40 h-20 border-b transition-all duration-700 ${borderTheme} ${navbarBgTheme}`}
       >
         <div className="max-w-7xl mx-auto h-full px-6 md:px-12 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5 md:gap-3">
             <span
-              className="text-lg md:text-xl font-bold tracking-[0.25em] font-mono select-none transition-colors duration-700"
+              className="text-lg md:text-xl font-semibold tracking-tight font-mono select-none transition-colors duration-700"
               style={{ color: activeTheme.text }}
             >
-              MP
+              Mpinger
             </span>
             <span
-              className="text-xs px-2 py-0.5 border rounded-md font-medium font-mono tracking-wider transition-colors duration-700"
+              className="text-[10px] md:text-xs px-2 py-0.5 border rounded-md font-medium font-mono uppercase tracking-wider transition-colors duration-700"
               style={{
                 color: activeTheme.text,
                 borderColor: `${activeTheme.accent}66`,
                 opacity: 0.8,
               }}
             >
-              GROUP
+              Groups
             </span>
           </div>
 
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden md:flex items-center gap-9 lg:gap-10">
             {sectionsData.map((section, idx) => (
               <button
                 key={section.id}
@@ -297,7 +297,8 @@ export default function Home() {
             keywords={section.keywords}
             brands={section.brands}
             align={section.align}
-            sectionHeight="400vh"
+            sectionHeight={idx === 0 ? "150vh" : "400vh"}
+            stackOrder={idx}
           />
         ))}
       </main>
@@ -305,15 +306,15 @@ export default function Home() {
       {/* Premium minimal footer / group contact point */}
       <footer
         id="contact"
-        className={`w-full py-12 border-t text-center transition-colors duration-1000 ${borderTheme}`}
+        className={`w-full py-14 border-t text-center transition-colors duration-1000 ${borderTheme}`}
         style={{ backgroundColor: lastSection.backgroundColor }}
       >
-        <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-col sm:flex-row items-center justify-between gap-6">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-col sm:flex-row items-center justify-between gap-8">
           <p
             className="text-xs tracking-wider opacity-50 font-light"
             style={{ color: footerTextColor }}
           >
-            © {new Date().getFullYear()} MP GROUP. All rights reserved.
+            © {new Date().getFullYear()} Mpinger Groups. All rights reserved.
           </p>
           <a
             href="mailto:info@mpinger.de"

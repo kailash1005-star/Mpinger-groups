@@ -45,6 +45,14 @@ interface ScrollVideoSectionProps {
   brands?: BrandLink[];
   align: "left" | "right" | "center";
   sectionHeight?: string; // e.g., "400vh"
+  /**
+   * Deterministic paint order for the sticky handoff between sections.
+   * Must strictly increase down the page (e.g. section index) — this is what
+   * guarantees the incoming section's video always paints over the outgoing
+   * one during the sticky transition, instead of leaving it to each browser's
+   * own (inconsistent) tie-breaking when two sticky layers share a z-index.
+   */
+  stackOrder?: number;
 }
 
 /** Scroll-linked reveal wrapper — fades/slides in at [start, end] and out near the section's tail */
@@ -118,6 +126,7 @@ export const ScrollVideoSection: React.FC<ScrollVideoSectionProps> = ({
   brands = [],
   align,
   sectionHeight = "400vh",
+  stackOrder = 0,
 }) => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -260,11 +269,18 @@ export const ScrollVideoSection: React.FC<ScrollVideoSectionProps> = ({
     <section
       id={id}
       ref={sectionRef}
-      style={{ height: sectionHeight, backgroundColor }}
+      style={{ height: sectionHeight, backgroundColor, zIndex: stackOrder, isolation: "isolate" }}
       className="relative w-full overflow-visible"
     >
-      {/* Sticky video wrapper */}
-      <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center z-10">
+      {/* Sticky video wrapper — own compositing layer + strictly increasing
+          z-index down the page, so the incoming section always paints over
+          the outgoing one during the sticky handoff instead of leaving paint
+          order to the browser's tie-breaking when two sticky layers share a
+          z-index (the cause of the flash-back-to-previous-section glitch). */}
+      <div
+        className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center"
+        style={{ zIndex: 10 + stackOrder, backgroundColor, willChange: "transform", transform: "translateZ(0)" }}
+      >
         <motion.div style={{ opacity: videoOpacity }} className="absolute inset-0 w-full h-full">
           <video
             ref={videoRef}
@@ -274,7 +290,7 @@ export const ScrollVideoSection: React.FC<ScrollVideoSectionProps> = ({
             playsInline
             webkit-playsinline="true"
             className="absolute inset-0 w-full h-full object-cover"
-            style={{ pointerEvents: "none" }}
+            style={{ pointerEvents: "none", backgroundColor }}
           />
           {/* Scrim tuned per section so text stays legible without hiding the footage */}
           <div
@@ -323,7 +339,7 @@ export const ScrollVideoSection: React.FC<ScrollVideoSectionProps> = ({
         {/* Content overlay — open typography over the video, no card */}
         {isInView && (
           <div
-            className={`absolute inset-0 z-20 pointer-events-none flex items-center ${justify} px-6 sm:px-10 md:px-16 lg:px-24 py-24`}
+            className={`absolute inset-0 z-20 pointer-events-none flex items-center ${justify} px-6 sm:px-10 md:px-16 lg:px-24 xl:px-28 py-24`}
           >
             <div
               className={`w-full flex flex-col ${alignItems} ${
@@ -331,7 +347,7 @@ export const ScrollVideoSection: React.FC<ScrollVideoSectionProps> = ({
               }`}
             >
               {/* Title */}
-              <Reveal progress={smoothProgress} start={0.08} end={0.2} className="mb-5 md:mb-7">
+              <Reveal progress={smoothProgress} start={0.08} end={0.2} className="mb-6 md:mb-8">
                 {isHero ? (
                   <h1
                     className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-medium tracking-tight leading-[1.06] text-balance"
@@ -351,7 +367,7 @@ export const ScrollVideoSection: React.FC<ScrollVideoSectionProps> = ({
 
               {/* Description */}
               {description && (
-                <Reveal progress={smoothProgress} start={0.26} end={0.38} className="mb-8 md:mb-10">
+                <Reveal progress={smoothProgress} start={0.26} end={0.38} className="mb-10 md:mb-12">
                   <p
                     className="text-base sm:text-lg font-normal leading-relaxed max-w-lg text-pretty"
                     style={{ color: theme.muted, textShadow }}
@@ -364,7 +380,7 @@ export const ScrollVideoSection: React.FC<ScrollVideoSectionProps> = ({
               {/* Keyword tags — footprint / facts at a glance instead of bullet text */}
               {keywords.length > 0 && (
                 <div
-                  className={`flex flex-wrap gap-2.5 mb-8 md:mb-10 ${
+                  className={`flex flex-wrap gap-3 mb-10 md:mb-12 ${
                     align === "center" ? "justify-center" : "justify-start"
                   }`}
                 >
@@ -397,10 +413,16 @@ export const ScrollVideoSection: React.FC<ScrollVideoSectionProps> = ({
                 </div>
               )}
 
-              {/* Brand gateways — minimal logo buttons out to the dedicated sites */}
+              {/* Brand gateways — minimal logo buttons out to the dedicated sites.
+                  mt-2 is deliberate and independent of the preceding element's
+                  own bottom margin, so the CTA row always reads as a clearly
+                  separate, deliberately-placed block rather than butting up
+                  against whichever text happens to precede it (description,
+                  keywords, or — if a section ever ships with neither — the
+                  title). */}
               {brands.length > 0 && (
                 <div
-                  className={`flex flex-wrap items-center gap-3 ${
+                  className={`flex flex-wrap items-center gap-4 mt-2 md:mt-3 ${
                     align === "center" ? "justify-center" : "justify-start"
                   }`}
                 >
