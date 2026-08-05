@@ -37,10 +37,10 @@ const sectionsData: SectionData[] = [
       accent: "#8ab4ff",
       scrim: "dark",
     },
-    title: "One group. Engineering, nature, and intelligence.",
+    title: "German standards. Indian scale.",
     description:
-      "From machinery roots in India to a global, multi-vertical group headquartered in Germany.",
-    keywords: ["India", "Germany", "Peru", "Mexico"],
+      "Four specialist companies under one group: precision machined components, peat-free growing media, compact construction machinery and enterprise AI — manufactured at Indian scale, specified and quality-assured from Hannover.",
+    keywords: ["Hannover HQ", "India", "Peru", "Mexico"],
     align: "center",
   },
   {
@@ -59,10 +59,10 @@ const sectionsData: SectionData[] = [
       // the produce/plants stay vivid behind the copy.
       scrimStrength: "soft",
     },
-    title: "Growing the future on renewable coco substrates.",
+    title: "Peat-free growing media, made from coconut husk.",
     description:
-      "Sustainable coir growing media — produced in India and Germany, nurturing horticulture across the globe.",
-    keywords: ["100% renewable", "Grown in India", "Warehoused in Germany"],
+      "Kokosflora turns coconut husk — a by-product of food agriculture — into renewable coir substrate for professional horticulture. Produced in India, warehoused in Germany for short EU lead times.",
+    keywords: ["Peat-free", "100% renewable", "EU stock in Germany"],
     brands: [
       {
         name: "Kokosflora",
@@ -86,9 +86,10 @@ const sectionsData: SectionData[] = [
       accent: "#e2551c",
       scrim: "light",
     },
-    title: "Precision engineering. Built to move industries.",
+    title: "Precision components, machined to European tolerance.",
     description:
-      "The group's founding business — precision machine components from India, and compact construction machines for Europe.",
+      "The group's founding business. mpinger delivers CNC-turned and milled parts, castings, sheet metal and surface finishing from Indian production to European industry — with Hanox supplying compact construction machinery to the same standard.",
+    keywords: ["5-axis CNC", "Casting & sheet metal", "Surface treatment"],
     brands: [
       {
         name: "mpinger",
@@ -107,7 +108,7 @@ const sectionsData: SectionData[] = [
   },
   {
     id: "technology",
-    navLabel: "Technology",
+    navLabel: "AI",
     videoSrc: "/videos/section-4.mp4",
     mobileVideoSrc: "/videos/mobile/section-4.mp4",
     posterSrc: "/videos/posters/section-4.jpg",
@@ -119,10 +120,10 @@ const sectionsData: SectionData[] = [
       scrim: "dark",
       scrimStrength: "strong",
     },
-    title: "AI-native. Enterprise-ready.",
+    title: "Enterprise AI, past the pilot stage.",
     description:
-      "The newest chapter — enterprise AI solutions and consulting, engineered for real-world adoption.",
-    keywords: ["AI adoption", "Enterprise platforms", "Consulting"],
+      "mpasys takes AI from proof-of-concept to systems people actually use — data foundations, honest evaluation, and integration into the workflows a business already runs on.",
+    keywords: ["Production deployment", "Data & evaluation", "Workflow integration"],
     brands: [
       {
         name: "mpasys",

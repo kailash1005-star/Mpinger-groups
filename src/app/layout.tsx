@@ -16,7 +16,9 @@ const geistMono = Geist_Mono({
   display: "swap",
 });
 
-const title = `${siteName} — Engineering, Sustainability & AI-Native Technology`;
+// Front-loads the terms a buyer actually searches. "AI-Native Technology" was
+// a label the company applies to itself, not a phrase anyone types into Google.
+const title = `${siteName} — Precision Manufacturing, Peat-Free Substrates & Enterprise AI`;
 
 export const metadata: Metadata = {
   // Required for OG/Twitter image paths to resolve to absolute URLs. Without
@@ -30,12 +32,17 @@ export const metadata: Metadata = {
   applicationName: siteName,
   keywords: [
     "Mpinger Groups",
-    "precision engineering",
-    "CNC machining",
-    "coco substrate",
-    "coir growing media",
-    "construction machinery",
+    "precision machined components",
+    "CNC machining India",
+    "5-axis CNC supplier",
+    "contract manufacturing Germany",
+    "peat-free growing media",
+    "coir substrate supplier",
+    "coco peat Europe",
+    "compact construction machinery",
+    "mini excavator dealer Germany",
     "enterprise AI consulting",
+    "AI implementation partner",
     "Indo-German manufacturing",
     "Hannover",
   ],

@@ -19,8 +19,14 @@ export const siteUrl = (
 
 export const siteName = "Mpinger Groups";
 
+/**
+ * Search-result copy. Written to earn the click rather than list brands:
+ * leads with the differentiator (Indo-German), names the four concrete
+ * offerings a buyer would actually search for, and stays inside the ~160
+ * characters Google renders before truncating.
+ */
 export const siteDescription =
-  "An Indo-German group of companies — precision engineering (mpinger), sustainable coco substrates (Kokosflora), compact construction machines (Hanox), and enterprise AI consulting (mpasys).";
+  "Indo-German group delivering CNC precision components, peat-free coir substrates, compact construction machinery and enterprise AI. Indian scale, German specification.";
 
 /**
  * Postal address, contact and registration details — reused by the footer,
