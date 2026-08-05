@@ -174,6 +174,8 @@ export const ScrollVideoSection: React.FC<ScrollVideoSectionProps> = ({
   const targetTimeRef = useRef(0);
   const isSeekingRef = useRef(false);
   const pendingSeekRef = useRef<number | null>(null);
+  /** Releases the seek lock if a `seeked` event never arrives — see beginSeek. */
+  const seekWatchdogRef = useRef<number | null>(null);
 
   // Check if section is in viewport to save CPU/GPU processing
   const isInView = useInView(sectionRef, { margin: "0px 0px 0px 0px" });
@@ -227,6 +229,43 @@ export const ScrollVideoSection: React.FC<ScrollVideoSectionProps> = ({
     mass: 0.2,
   });
 
+  /**
+   * Issue a seek and arm a watchdog.
+   *
+   * `isSeekingRef` is a lock that only the `seeked` event released. If that
+   * event never arrived the lock stayed set forever, and from then on every
+   * scroll update merely overwrote `pendingSeekRef` while the frame never
+   * advanced — the section appeared frozen until some later event happened to
+   * release it, which is exactly the "smooth once, stuck the next time"
+   * behaviour. A `seeked` can legitimately go missing: the browser may drop or
+   * supersede a seek under load, or satisfy one without firing an event when
+   * the requested time resolves to the frame already displayed.
+   *
+   * The watchdog makes the lock self-healing, so a single lost event can no
+   * longer wedge scrubbing permanently.
+   */
+  const beginSeek = (time: number) => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    isSeekingRef.current = true;
+    video.currentTime = time;
+
+    if (seekWatchdogRef.current !== null) window.clearTimeout(seekWatchdogRef.current);
+    seekWatchdogRef.current = window.setTimeout(() => {
+      seekWatchdogRef.current = null;
+      isSeekingRef.current = false;
+
+      // Resume at wherever the scroll has since reached, not the stale target.
+      const resumeAt = pendingSeekRef.current ?? targetTimeRef.current;
+      pendingSeekRef.current = null;
+      const current = videoRef.current;
+      if (current && Math.abs(current.currentTime - resumeAt) >= 0.01) {
+        beginSeek(resumeAt);
+      }
+    }, 220);
+  };
+
   // seekTo function with seek throttling logic
   const seekTo = (targetTime: number) => {
     const video = videoRef.current;
@@ -245,12 +284,15 @@ export const ScrollVideoSection: React.FC<ScrollVideoSectionProps> = ({
       // Store the latest seek time to process once the current seek completes
       pendingSeekRef.current = boundedTime;
     } else {
-      isSeekingRef.current = true;
-      video.currentTime = boundedTime;
+      beginSeek(boundedTime);
     }
   };
 
   const handleSeeked = () => {
+    if (seekWatchdogRef.current !== null) {
+      window.clearTimeout(seekWatchdogRef.current);
+      seekWatchdogRef.current = null;
+    }
     isSeekingRef.current = false;
     const video = videoRef.current;
     if (!video) return;
@@ -261,8 +303,7 @@ export const ScrollVideoSection: React.FC<ScrollVideoSectionProps> = ({
 
       // Check threshold again before performing pending seek
       if (Math.abs(video.currentTime - nextSeekTime) >= 0.01) {
-        isSeekingRef.current = true;
-        video.currentTime = nextSeekTime;
+        beginSeek(nextSeekTime);
       }
     }
   };
@@ -303,6 +344,10 @@ export const ScrollVideoSection: React.FC<ScrollVideoSectionProps> = ({
     return () => {
       video.removeEventListener("loadedmetadata", handleLoadedMetadata);
       video.removeEventListener("seeked", handleSeeked);
+      if (seekWatchdogRef.current !== null) {
+        window.clearTimeout(seekWatchdogRef.current);
+        seekWatchdogRef.current = null;
+      }
     };
   }, []);
 
@@ -403,11 +448,15 @@ export const ScrollVideoSection: React.FC<ScrollVideoSectionProps> = ({
             style={{
               pointerEvents: "none",
               backgroundColor,
-              // With a soft scrim the footage is the hero of the frame, so give
-              // it a touch more presence rather than letting it read as flat.
-              ...(scrimStrength === "soft"
-                ? { filter: "saturate(1.12) contrast(1.06)" }
-                : null),
+              // NOTE: deliberately no CSS `filter` here. A filter on a <video>
+              // takes it off the browser's fast video-compositing path: instead
+              // of handing decoded frames straight to the compositor, every
+              // frame has to be decoded, uploaded, filtered and re-composited.
+              // On a scroll-scrubbed video that cost is paid on every seek, and
+              // it was heavy enough to make seeks queue up and the section
+              // visibly stall. The soft-scrim grade this replaced is now baked
+              // into the encoded file, so the look is identical and the runtime
+              // cost is zero.
             }}
           />
           {/* Scrim tuned per section so text stays legible without hiding the footage */}
