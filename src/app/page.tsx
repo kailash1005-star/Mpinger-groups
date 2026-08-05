@@ -29,7 +29,7 @@ const sectionsData: SectionData[] = [
     navLabel: "Group",
     videoSrc: "/videos/section-1.mp4",
     mobileVideoSrc: "/videos/mobile/section-1.mp4",
-    posterSrc: "/videos/posters/section-1.jpg",
+    posterSrc: "/videos/posters/section-1.webp",
     backgroundColor: "#050505",
     theme: {
       text: "#f4f4f5",
@@ -48,7 +48,7 @@ const sectionsData: SectionData[] = [
     navLabel: "Kokosflora",
     videoSrc: "/videos/kokosflora-coir-lifecycle.mp4",
     mobileVideoSrc: "/videos/mobile/kokosflora-coir-lifecycle.mp4",
-    posterSrc: "/videos/posters/kokosflora-coir-lifecycle.jpg",
+    posterSrc: "/videos/posters/kokosflora-coir-lifecycle.webp",
     backgroundColor: "#d6c0a3",
     theme: {
       text: "#2b2014",
@@ -78,7 +78,7 @@ const sectionsData: SectionData[] = [
     navLabel: "Engineering",
     videoSrc: "/videos/section-3.mp4",
     mobileVideoSrc: "/videos/mobile/section-3.mp4",
-    posterSrc: "/videos/posters/section-3.jpg",
+    posterSrc: "/videos/posters/section-3.webp",
     backgroundColor: "#e5e5e5",
     theme: {
       text: "#141414",
@@ -111,7 +111,7 @@ const sectionsData: SectionData[] = [
     navLabel: "AI",
     videoSrc: "/videos/section-4.mp4",
     mobileVideoSrc: "/videos/mobile/section-4.mp4",
-    posterSrc: "/videos/posters/section-4.jpg",
+    posterSrc: "/videos/posters/section-4.webp",
     backgroundColor: "#080808",
     theme: {
       text: "#ffffff",
@@ -150,31 +150,35 @@ const isDarkColor = (hex: string) => {
 export default function Home() {
   const [activeSection, setActiveSection] = useState(0);
 
-  // Monitor which section is in view to update navigation indicators
+  // Track which section owns the viewport, to drive the nav highlight.
+  //
+  // This previously ran on every scroll event and called getBoundingClientRect()
+  // on all four sections each time. Reading layout geometry inside a scroll
+  // handler forces a synchronous reflow on every frame — the textbook cause of
+  // scroll jank, and expensive enough on a phone to be felt while the video is
+  // also being scrubbed. IntersectionObserver computes the same answer without
+  // touching layout on the main thread.
+  //
+  // The -50%/-50% rootMargin collapses the root box to a 1px band across the
+  // middle of the viewport, which reproduces the old "midpoint of the screen"
+  // test exactly.
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollPos = window.scrollY + window.innerHeight / 2;
-      let currentSection = 0;
-
-      for (let i = 0; i < sectionsData.length; i++) {
-        const el = document.getElementById(sectionsData[i].id);
-        if (el) {
-          const rect = el.getBoundingClientRect();
-          const top = rect.top + window.scrollY;
-          const bottom = top + rect.height;
-          if (scrollPos >= top && scrollPos < bottom) {
-            currentSection = i;
-            break;
-          }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          const idx = sectionsData.findIndex((s) => s.id === entry.target.id);
+          if (idx !== -1) setActiveSection(idx);
         }
-      }
-      setActiveSection(currentSection);
-    };
+      },
+      { rootMargin: "-50% 0px -50% 0px", threshold: 0 }
+    );
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    // Initial check
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
+    for (const section of sectionsData) {
+      const el = document.getElementById(section.id);
+      if (el) observer.observe(el);
+    }
+    return () => observer.disconnect();
   }, []);
 
   const scrollToSection = (id: string) => {

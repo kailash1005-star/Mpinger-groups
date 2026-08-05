@@ -111,7 +111,10 @@ const BrandButton = ({ brand }: { brand: BrandLink }) => (
     rel="noopener noreferrer"
     aria-label={`Visit ${brand.name}`}
     title={brand.href.replace(/^https?:\/\//, "")}
-    className="brand-btn group pointer-events-auto relative overflow-hidden inline-flex items-center justify-between gap-4 rounded-full bg-white h-16 sm:h-[4.5rem] pl-6 pr-2.5 sm:pl-7 sm:pr-3 ring-1 transition-all duration-300 hover:-translate-y-1.5 hover:scale-[1.03]"
+    // Shorter and tighter on phones: two of these stack vertically on a narrow
+    // screen, so the desktop height was costing ~30px of vertical budget that
+    // the frame does not have.
+    className="brand-btn group pointer-events-auto relative overflow-hidden inline-flex items-center justify-between gap-3 sm:gap-4 rounded-full bg-white h-14 sm:h-[4.5rem] pl-5 pr-2 sm:pl-7 sm:pr-3 ring-1 transition-all duration-300 hover:-translate-y-1.5 hover:scale-[1.03]"
     style={
       {
         "--brand": brand.accent,
@@ -122,15 +125,21 @@ const BrandButton = ({ brand }: { brand: BrandLink }) => (
     }
   >
     {/* Fixed-size logo well so every brand pill shares the exact same footprint */}
-    <span className="relative z-10 flex items-center justify-center w-[140px] sm:w-[160px] h-full shrink-0">
+    <span className="relative z-10 flex items-center justify-center w-[112px] sm:w-[160px] h-full shrink-0">
       <img
         src={brand.logo}
         alt={brand.name}
-        className="max-h-9 sm:max-h-10 max-w-full w-auto object-contain"
+        // Intrinsic size lets the browser reserve the box before the PNG
+        // decodes, so the CTA row doesn't shift as logos load.
+        width={160}
+        height={40}
+        loading="lazy"
+        decoding="async"
+        className="max-h-7 sm:max-h-10 max-w-full w-auto object-contain"
       />
     </span>
     <span
-      className="relative z-10 flex items-center justify-center w-11 h-11 rounded-full shrink-0 text-white transition-transform duration-300 group-hover:scale-110"
+      className="relative z-10 flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-full shrink-0 text-white transition-transform duration-300 group-hover:scale-110"
       style={{ backgroundColor: brand.accent }}
     >
       <ArrowUpRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -451,9 +460,12 @@ export const ScrollVideoSection: React.FC<ScrollVideoSectionProps> = ({
               // tall copy slides underneath it. Bottom padding is trimmed to
               // buy that headroom back rather than squeezing the type or the
               // spacing between blocks.
+              // pt-24 (96px) is the floor: it must clear the 80px fixed header.
+              // Bottom padding is trimmed hard on phones — on an 844px viewport
+              // every 8px matters, and the frame is what the copy has to fit in.
               isHero
-                ? "pt-24 md:pt-28 pb-28 sm:pb-32 md:pb-36"
-                : "pt-24 md:pt-28 pb-12 md:pb-16"
+                ? "pt-24 md:pt-28 pb-20 sm:pb-28 md:pb-36"
+                : "pt-24 md:pt-28 pb-8 sm:pb-12 md:pb-16"
             }`}
           >
             <div
@@ -467,7 +479,7 @@ export const ScrollVideoSection: React.FC<ScrollVideoSectionProps> = ({
                 start={0.08}
                 end={0.2}
                 immediate={isHero}
-                className="mb-[clamp(1.5rem,5.7vh,3.5rem)]"
+                className="mb-[clamp(1rem,min(5.7vh,8vw),3.5rem)]"
               >
                 {isHero ? (
                   <h1
@@ -512,7 +524,7 @@ export const ScrollVideoSection: React.FC<ScrollVideoSectionProps> = ({
                   start={0.26}
                   end={0.38}
                   immediate={isHero}
-                  className="mb-[clamp(1.5rem,8.2vh,5rem)]"
+                  className="mb-[clamp(1rem,min(8.2vh,11vw),5rem)]"
                 >
                   <p
                     className="font-normal leading-relaxed max-w-xl text-pretty"
@@ -532,7 +544,7 @@ export const ScrollVideoSection: React.FC<ScrollVideoSectionProps> = ({
                   accent dot and generous air between each one. */}
               {keywords.length > 0 && (
                 <div
-                  className={`flex flex-wrap gap-x-8 gap-y-3 mb-[clamp(1.25rem,6.5vh,4rem)] ${
+                  className={`flex flex-wrap gap-x-5 gap-y-2 sm:gap-x-8 sm:gap-y-3 mb-[clamp(1rem,min(6.5vh,9vw),4rem)] ${
                     align === "center" ? "justify-center" : "justify-start"
                   }`}
                 >
@@ -565,7 +577,7 @@ export const ScrollVideoSection: React.FC<ScrollVideoSectionProps> = ({
                   reliant on whatever text happens to precede it) rather than
                   butting up against the copy above it. */}
               {brands.length > 0 && (
-                <div className="mt-[clamp(1rem,4.9vh,3rem)]">
+                <div className="mt-[clamp(0.75rem,min(4.9vh,7vw),3rem)]">
                   <Reveal
                     progress={smoothProgress}
                     start={0.46}

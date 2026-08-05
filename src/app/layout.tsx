@@ -161,6 +161,16 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
+        {/* The hero poster is the Largest Contentful Paint element. Preloading
+            it at high priority starts the fetch from the HTML rather than
+            waiting for the video element to be constructed by React. */}
+        <link
+          rel="preload"
+          as="image"
+          href="/videos/posters/section-1.webp"
+          type="image/webp"
+          fetchPriority="high"
+        />
         {/* Warm up the font origins before the CSS that needs them is parsed. */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
