@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import {
   ScrollVideoSection,
   type BrandLink,
@@ -11,6 +12,8 @@ interface SectionData {
   id: string;
   navLabel: string;
   videoSrc: string;
+  mobileVideoSrc: string;
+  posterSrc: string;
   backgroundColor: string;
   theme: SectionTheme;
   title: string;
@@ -25,6 +28,8 @@ const sectionsData: SectionData[] = [
     id: "group",
     navLabel: "Group",
     videoSrc: "/videos/section-1.mp4",
+    mobileVideoSrc: "/videos/mobile/section-1.mp4",
+    posterSrc: "/videos/posters/section-1.jpg",
     backgroundColor: "#050505",
     theme: {
       text: "#f4f4f5",
@@ -42,12 +47,17 @@ const sectionsData: SectionData[] = [
     id: "kokosflora",
     navLabel: "Kokosflora",
     videoSrc: "/videos/kokosflora-coir-lifecycle.mp4",
+    mobileVideoSrc: "/videos/mobile/kokosflora-coir-lifecycle.mp4",
+    posterSrc: "/videos/posters/kokosflora-coir-lifecycle.jpg",
     backgroundColor: "#d6c0a3",
     theme: {
       text: "#2b2014",
       muted: "#54432d",
       accent: "#2e7d4f",
       scrim: "light",
+      // The coir lifecycle footage is the story here — keep the wash light so
+      // the produce/plants stay vivid behind the copy.
+      scrimStrength: "soft",
     },
     title: "Growing the future on renewable coco substrates.",
     description:
@@ -61,12 +71,14 @@ const sectionsData: SectionData[] = [
         accent: "#2e7d4f",
       },
     ],
-    align: "right",
+    align: "center",
   },
   {
     id: "engineering",
     navLabel: "Engineering",
     videoSrc: "/videos/section-3.mp4",
+    mobileVideoSrc: "/videos/mobile/section-3.mp4",
+    posterSrc: "/videos/posters/section-3.jpg",
     backgroundColor: "#e5e5e5",
     theme: {
       text: "#141414",
@@ -91,19 +103,21 @@ const sectionsData: SectionData[] = [
         accent: "#e8a200",
       },
     ],
-    align: "left",
+    align: "center",
   },
   {
     id: "technology",
     navLabel: "Technology",
     videoSrc: "/videos/section-4.mp4",
+    mobileVideoSrc: "/videos/mobile/section-4.mp4",
+    posterSrc: "/videos/posters/section-4.jpg",
     backgroundColor: "#080808",
     theme: {
       text: "#ffffff",
       muted: "#c3c6d1",
       accent: "#9d7bff",
       scrim: "dark",
-      strongScrim: true,
+      scrimStrength: "strong",
     },
     title: "AI-native. Enterprise-ready.",
     description:
@@ -191,7 +205,7 @@ export default function Home() {
       <header
         className={`fixed top-0 left-0 right-0 z-40 h-20 border-b transition-all duration-700 ${borderTheme} ${navbarBgTheme}`}
       >
-        <div className="max-w-7xl mx-auto h-full px-6 md:px-12 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto h-full px-6 md:px-12 lg:px-16 xl:px-20 flex items-center justify-between">
           <div className="flex items-center gap-2.5 md:gap-3">
             <span
               className="text-lg md:text-xl font-semibold tracking-tight font-mono select-none transition-colors duration-700"
@@ -232,13 +246,18 @@ export default function Home() {
           </nav>
 
           <div>
+            {/* Premium CTA — filled with the active section's own accent
+                color (rather than a flat black/white invert), with a
+                persistent accent-tinted shadow and a confident hover lift,
+                so it reads as a considered call to action, not a stock
+                bordered pill. */}
             <button
               onClick={() => scrollToSection("contact")}
-              className={`px-5 py-2 border rounded-full text-xs uppercase tracking-wider font-semibold transition-all duration-300 ${
-                isThemeDark
-                  ? "bg-white text-black border-white hover:bg-transparent hover:text-white"
-                  : "bg-neutral-900 text-white border-neutral-900 hover:bg-transparent hover:text-neutral-900"
-              }`}
+              className="px-6 py-2.5 rounded-full text-xs uppercase tracking-[0.15em] font-semibold text-white transition-all duration-300 hover:scale-[1.05] hover:brightness-110 active:scale-[0.97]"
+              style={{
+                backgroundColor: activeTheme.accent,
+                boxShadow: `0 10px 28px -10px ${activeTheme.accent}99`,
+              }}
             >
               Contact
             </button>
@@ -290,6 +309,8 @@ export default function Home() {
             id={section.id}
             isHero={idx === 0}
             videoSrc={section.videoSrc}
+            mobileVideoSrc={section.mobileVideoSrc}
+            posterSrc={section.posterSrc}
             backgroundColor={section.backgroundColor}
             theme={section.theme}
             title={section.title}
@@ -297,7 +318,7 @@ export default function Home() {
             keywords={section.keywords}
             brands={section.brands}
             align={section.align}
-            sectionHeight={idx === 0 ? "150vh" : "400vh"}
+            sectionHeight={idx === 0 ? "260vh" : "400vh"}
             stackOrder={idx}
           />
         ))}
@@ -323,16 +344,22 @@ export default function Home() {
           >
             info@mpinger.de
           </a>
+          {/* "Impressum" and "Legal Notice" were two labels for the same legal
+              instrument, and all three pointed at href="#" — dead links that a
+              German commercial site is legally required to actually provide. */}
           <div className="flex gap-6">
-            {["Privacy Policy", "Impressum", "Legal Notice"].map((item) => (
-              <a
-                key={item}
-                href="#"
+            {[
+              { label: "Impressum", href: "/impressum" },
+              { label: "Datenschutz", href: "/datenschutz" },
+            ].map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
                 className="text-xs tracking-wider opacity-50 hover:opacity-100 transition-opacity duration-300 font-light"
                 style={{ color: footerTextColor }}
               >
-                {item}
-              </a>
+                {item.label}
+              </Link>
             ))}
           </div>
         </div>

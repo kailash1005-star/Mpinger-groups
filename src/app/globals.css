@@ -12,11 +12,11 @@
   --font-mono: var(--font-geist-mono);
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+/* NOTE: do not re-add an unlayered universal `margin: 0; padding: 0` reset here.
+   Tailwind v4 emits its utilities inside `@layer utilities`, and unlayered rules
+   outrank any layered rule regardless of specificity — so a universal reset like
+   that silently disables every margin and padding utility site-wide. Tailwind's
+   own preflight already performs this exact reset inside `@layer base`. */
 
 html {
   scroll-behavior: smooth;
@@ -42,21 +42,26 @@ body {
   color: inherit;
 }
 
-/* Brand gateway buttons — soft breathing glow in the brand accent color */
+/* Brand gateway buttons — persistent accent-tinted lift plus a soft breathing
+   glow, so each button reads as a raised, deliberate call-to-action even at
+   rest instead of only gaining presence on hover. */
 .brand-btn {
   --brand: #000;
   --brand-glow: rgba(0, 0, 0, 0.35);
   --brand-sheen: rgba(0, 0, 0, 0.12);
-  box-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.35);
+  box-shadow:
+    0 14px 34px -14px var(--brand-glow),
+    0 4px 14px -6px rgba(0, 0, 0, 0.28);
   animation: brand-glow 3.6s ease-in-out infinite;
 }
 
 .brand-btn:hover,
 .brand-btn:focus-visible {
   box-shadow:
-    0 16px 40px -12px rgba(0, 0, 0, 0.35),
+    0 20px 44px -14px var(--brand-glow),
+    0 4px 14px -6px rgba(0, 0, 0, 0.28),
     0 0 0 3px var(--brand-sheen),
-    0 0 32px 4px var(--brand-glow);
+    0 0 36px 6px var(--brand-glow);
   animation-play-state: paused;
 }
 
@@ -64,13 +69,14 @@ body {
   0%,
   100% {
     box-shadow:
-      0 12px 32px -12px rgba(0, 0, 0, 0.35),
-      0 0 0 0 transparent;
+      0 14px 34px -14px var(--brand-glow),
+      0 4px 14px -6px rgba(0, 0, 0, 0.28);
   }
   50% {
     box-shadow:
-      0 12px 32px -12px rgba(0, 0, 0, 0.35),
-      0 0 26px 3px var(--brand-glow);
+      0 14px 34px -14px var(--brand-glow),
+      0 4px 14px -6px rgba(0, 0, 0, 0.28),
+      0 0 28px 4px var(--brand-glow);
   }
 }
 
@@ -96,7 +102,36 @@ body {
   }
 }
 
+/* Every interactive element must show a visible keyboard focus ring. The
+   design leans on hover states, which keyboard users never trigger — without
+   this, tabbing through the nav and brand links is completely invisible. */
+:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Scrollbars are hidden for aesthetics (see `html` above). That removes the
+   only visual scroll affordance, so make sure the page can still be driven
+   from the keyboard by keeping focused elements scrolled into view. */
+html {
+  scroll-padding-top: 6rem;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  /* The scroll-scrubbed video is suppressed in JS (the clip is not even
+     fetched); this covers the purely decorative CSS motion. */
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
   .brand-btn {
     animation: none;
   }
