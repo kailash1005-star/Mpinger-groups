@@ -149,9 +149,9 @@ export default function DatenschutzPage() {
           6. Kontaktaufnahme
         </h2>
         <p>
-          Diese Website stellt kein Kontaktformular bereit. Nehmen Sie per E-Mail
-          oder Telefon Kontakt mit uns auf, werden Ihre Angaben zur Bearbeitung
-          der Anfrage gespeichert.
+          Über das Kontaktformular können Sie uns eine Anfrage senden. Die
+          Übermittlung erfolgt über den Dienst Web3Forms. Ihre Angaben werden
+          zur Bearbeitung der Anfrage gespeichert.
         </p>
         <p>
           Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO, sofern die Anfrage der
@@ -160,6 +160,8 @@ export default function DatenschutzPage() {
           Ihre Einwilligung. Die Daten werden gelöscht, sobald die Anfrage
           abschließend bearbeitet ist und keine gesetzlichen
           Aufbewahrungspflichten (regelmäßig 6 bis 10 Jahre) entgegenstehen.
+          Web3Forms verarbeitet die übermittelten Formulardaten als technischer
+          Dienstleister.
         </p>
       </section>
 
