@@ -10,16 +10,19 @@ name: Deploy to Vercel
 # commit author, so the check does not apply. Whoever writes the commit, the
 # deployment is made by the account that owns the project.
 
-# This is the only deploy path for this project. Vercel's Git integration is
-# disabled for `main` in vercel.json, because it refuses every commit regardless
-# of author: kailash1005@gmail.com deployed fine on 5 Aug and was blocked on
-# 10 Aug with an identical single-commit range, so the account it maps to is no
-# longer in the team that owns the project. Author-side fixes cannot work.
+# Dormant on purpose. Normal deploys go through Vercel's Git integration, which
+# works whenever the commit author maps to a Vercel account inside the team that
+# owns the project.
+#
+# It is kept because that condition does not hold for every contributor: the
+# Hobby plan cannot add team members, so a push authored by anyone outside the
+# owning account is refused no matter what the code says. Run this workflow by
+# hand to deploy such a commit.
+#
+# Needs VERCEL_TOKEN, VERCEL_ORG_ID and VERCEL_PROJECT_ID as repository secrets.
+# A `push:` trigger is deliberately absent — it would race the Git integration
+# and deploy the same commit twice.
 on:
-  push:
-    branches: [main]
-  # Re-run without an empty commit — needed after changing an environment
-  # variable in Vercel, since NEXT_PUBLIC_* values are baked in at build time.
   workflow_dispatch:
 
 # A newer push supersedes one still building. Never cancel a run mid-flight
