@@ -7,6 +7,10 @@ export const metadata: Metadata = {
   description:
     "Impressum und Anbieterkennzeichnung der mpinger GmbH gemäß § 5 DDG.",
   robots: { index: true, follow: true },
+  // The root layout declares canonical "/" and Next inherits it into every
+  // child route — which told search engines this page was a duplicate of the
+  // homepage. Each route must state its own.
+  alternates: { canonical: "/impressum" },
 };
 
 /**

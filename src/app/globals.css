@@ -102,6 +102,33 @@ body {
   }
 }
 
+.contact-label {
+  display: block;
+  margin-bottom: 0.7rem;
+  color: #44474d;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.contact-input {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid rgba(20, 20, 20, 0.2);
+  background: transparent;
+  padding: 0.7rem 0 0.85rem;
+  color: #141414;
+  font-size: 1rem;
+  line-height: 1.5;
+  outline: none;
+  transition: border-color 200ms ease;
+}
+
+.contact-input::placeholder { color: #6b6d72; }
+.contact-input:focus { border-color: #e2551c; }
+.contact-input option { background: #e5e5e5; color: #141414; }
+
 /* Every interactive element must show a visible keyboard focus ring. The
    design leans on hover states, which keyboard users never trigger — without
    this, tabbing through the nav and brand links is completely invisible. */

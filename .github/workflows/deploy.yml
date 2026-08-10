@@ -1,0 +1,82 @@
+name: Deploy to Vercel
+
+# A deploy that does not depend on who authored the commit.
+#
+# Vercel resolves a commit's author email to a Vercel account and refuses the
+# deployment if that account is not in the team owning the project — the Hobby
+# plan cannot add members, so there is no way to grant access to a contributor.
+#
+# A token-based deploy is attributed to the token's owner rather than to the
+# commit author, so the check does not apply. Whoever writes the commit, the
+# deployment is made by the account that owns the project.
+
+# Deliberately manual-only. Deploys normally run through Vercel's own Git
+# integration, which works as long as the commit author is kailash1005@gmail.com
+# (that address maps to a Vercel account inside the team; kailash@vanceltech.com
+# maps to a different account that is not). This workflow is the fallback for
+# when that is not true — most likely a push authored by another contributor.
+#
+# To use it: add the VERCEL_TOKEN, VERCEL_ORG_ID and VERCEL_PROJECT_ID secrets,
+# then Actions > Deploy to Vercel > Run workflow. Adding `push:` here would make
+# it deploy alongside the Git integration and race it.
+on:
+  workflow_dispatch:
+
+# A newer push supersedes one still building. Never cancel a run mid-flight
+# though: a half-finished deploy would leave production in an unknown state.
+concurrency:
+  group: vercel-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Build and deploy to production
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+    steps:
+      - name: Check required secrets are present
+        # Without this the run dies inside the Vercel CLI with a generic auth
+        # error. Fail here instead, naming exactly what is missing.
+        env:
+          TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          ORG: ${{ secrets.VERCEL_ORG_ID }}
+          PROJECT: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          missing=""
+          [ -n "$TOKEN" ]   || missing="$missing VERCEL_TOKEN"
+          [ -n "$ORG" ]     || missing="$missing VERCEL_ORG_ID"
+          [ -n "$PROJECT" ] || missing="$missing VERCEL_PROJECT_ID"
+          if [ -n "$missing" ]; then
+            echo "::error::Missing repository secret(s):$missing"
+            echo "Add them under Settings > Secrets and variables > Actions."
+            exit 1
+          fi
+
+      - name: Check out the commit being deployed
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Pull production project settings and environment
+        # This is what makes NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY reach the build:
+        # it downloads the project's Production environment variables so the
+        # build below inlines them, exactly as a Vercel-side build would.
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy prebuilt output to production
+        # --prebuilt uploads the artifacts built in the step above rather than
+        # rebuilding on Vercel, so what was verified here is what goes live.
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}

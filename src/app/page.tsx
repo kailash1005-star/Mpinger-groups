@@ -261,8 +261,8 @@ export default function Home() {
                 persistent accent-tinted shadow and a confident hover lift,
                 so it reads as a considered call to action, not a stock
                 bordered pill. */}
-            <button
-              onClick={() => scrollToSection("contact")}
+            <Link
+              href="/contact"
               className="px-6 py-2.5 rounded-full text-xs uppercase tracking-[0.15em] font-semibold text-white transition-all duration-300 hover:scale-[1.05] hover:brightness-110 active:scale-[0.97]"
               style={{
                 backgroundColor: activeTheme.accent,
@@ -270,7 +270,7 @@ export default function Home() {
               }}
             >
               Contact
-            </button>
+            </Link>
           </div>
         </div>
       </header>
@@ -333,6 +333,13 @@ export default function Home() {
               instrument, and all three pointed at href="#" — dead links that a
               German commercial site is legally required to actually provide. */}
           <div className="flex gap-6">
+            <Link
+              href="/contact"
+              className="text-xs tracking-wider opacity-50 hover:opacity-100 transition-opacity duration-300 font-light"
+              style={{ color: footerTextColor }}
+            >
+              Contact
+            </Link>
             {[
               { label: "Impressum", href: "/impressum" },
               { label: "Datenschutz", href: "/datenschutz" },
