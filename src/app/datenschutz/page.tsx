@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   description:
     "Datenschutzerklärung der mpinger GmbH gemäß Art. 13 DSGVO.",
   robots: { index: true, follow: true },
+  // See the note in impressum/page.tsx — canonical is inherited from the root
+  // layout unless each route overrides it.
+  alternates: { canonical: "/datenschutz" },
 };
 
 /**

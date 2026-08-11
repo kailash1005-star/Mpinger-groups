@@ -7,6 +7,10 @@ import { organisation } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Contact",
   description: "Start a conversation with Mpinger Groups about engineering, growing media, machinery or enterprise AI.",
+  // Without this the page inherits canonical "/" from the root layout and
+  // declares itself a duplicate of the homepage — which would keep the one
+  // page on the site built to capture enquiries out of the index.
+  alternates: { canonical: "/contact" },
 };
 
 export default function ContactPage() {
