@@ -95,7 +95,7 @@ const sectionsData: SectionData[] = [
       {
         name: "mpinger",
         logo: "/logos/mpinger.png",
-        href: "https://mpinger.de",
+        href: "https://www.mpinger-engineering.com/",
         accent: "#1e5aa8",
       },
       {
