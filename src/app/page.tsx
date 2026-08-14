@@ -198,10 +198,11 @@ export default function Home() {
   const active = sectionsData[activeSection];
   const activeTheme = active.theme;
   const isThemeDark = isDarkColor(active.backgroundColor);
-  const borderTheme = isThemeDark ? "border-white/10" : "border-neutral-900/10";
-  const navbarBgTheme = isThemeDark
-    ? "bg-black/10 backdrop-blur-md"
-    : "bg-white/10 backdrop-blur-md";
+  // Solid, legible nav surface: an opaque white bar with dark text, replacing
+  // the previous 10%-opacity glass that let the hero video show through.
+  const borderTheme = "border-neutral-200";
+  const navbarBgTheme = "bg-white shadow-sm";
+  const navText = "#141414";
 
   const lastSection = sectionsData[sectionsData.length - 1];
   const footerTextColor = isDarkColor(lastSection.backgroundColor)
@@ -221,14 +222,14 @@ export default function Home() {
           <div className="flex items-center gap-2.5 md:gap-3">
             <span
               className="text-lg md:text-xl font-semibold tracking-tight font-mono select-none transition-colors duration-700"
-              style={{ color: activeTheme.text }}
+              style={{ color: navText }}
             >
               Mpinger
             </span>
             <span
               className="text-[10px] md:text-xs px-2 py-0.5 border rounded-md font-medium font-mono uppercase tracking-wider transition-colors duration-700"
               style={{
-                color: activeTheme.text,
+                color: navText,
                 borderColor: `${activeTheme.accent}66`,
                 opacity: 0.8,
               }}
@@ -249,7 +250,7 @@ export default function Home() {
                 }`}
                 style={{
                   color:
-                    activeSection === idx ? activeTheme.accent : activeTheme.text,
+                    activeSection === idx ? activeTheme.accent : navText,
                 }}
               >
                 {section.navLabel}
@@ -285,7 +286,7 @@ export default function Home() {
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((v) => !v)}
             className="md:hidden ml-3 inline-flex h-10 w-10 items-center justify-center rounded-md border transition-colors duration-300"
-            style={{ color: activeTheme.text, borderColor: `${activeTheme.accent}66` }}
+            style={{ color: navText, borderColor: `${activeTheme.accent}66` }}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
               {menuOpen ? (
@@ -300,14 +301,14 @@ export default function Home() {
         {/* Mobile dropdown — mirrors the desktop nav links. Closes on
             selection (see scrollToSection). */}
         {menuOpen && (
-          <nav className="md:hidden border-t px-6 py-3 flex flex-col gap-1" style={{ borderColor: `${activeTheme.accent}33` }}>
+          <nav className="md:hidden bg-white shadow-xl border-t px-6 py-3 flex flex-col gap-1" style={{ borderColor: `${activeTheme.accent}33` }}>
             {sectionsData.map((section, idx) => (
               <button
                 key={section.id}
                 onClick={() => scrollToSection(section.id)}
                 className="text-left text-sm uppercase tracking-widest font-medium py-2.5 transition-colors duration-300"
                 style={{
-                  color: activeSection === idx ? activeTheme.accent : activeTheme.text,
+                  color: activeSection === idx ? activeTheme.accent : navText,
                   opacity: activeSection === idx ? 1 : 0.7,
                 }}
               >
