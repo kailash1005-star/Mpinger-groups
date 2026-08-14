@@ -154,6 +154,7 @@ const isDarkColor = (hex: string) => {
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState(0);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   // Track which section owns the viewport, to drive the nav highlight.
   //
@@ -191,6 +192,7 @@ export default function Home() {
     if (el) {
       el.scrollIntoView({ behavior: "smooth" });
     }
+    setMenuOpen(false);
   };
 
   const active = sectionsData[activeSection];
@@ -260,10 +262,11 @@ export default function Home() {
                 color (rather than a flat black/white invert), with a
                 persistent accent-tinted shadow and a confident hover lift,
                 so it reads as a considered call to action, not a stock
-                bordered pill. */}
+                bordered pill. Hidden below md because the mobile menu panel
+                (see below) carries its own Contact button. */}
             <Link
               href="/contact"
-              className="px-6 py-2.5 rounded-full text-xs uppercase tracking-[0.15em] font-semibold text-white transition-all duration-300 hover:scale-[1.05] hover:brightness-110 active:scale-[0.97]"
+              className="px-6 py-2.5 rounded-full text-xs uppercase tracking-[0.15em] font-semibold text-white transition-all duration-300 hover:scale-[1.05] hover:brightness-110 active:scale-[0.97] hidden md:inline-block"
               style={{
                 backgroundColor: activeTheme.accent,
                 boxShadow: `0 10px 28px -10px ${activeTheme.accent}99`,
@@ -272,7 +275,54 @@ export default function Home() {
               Contact
             </Link>
           </div>
+
+          {/* Mobile menu toggle — only shown below md, where the inline <nav>
+              is hidden. Keeps the same section shortcuts reachable on phones
+              instead of dropping them entirely. */}
+          <button
+            type="button"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen((v) => !v)}
+            className="md:hidden ml-3 inline-flex h-10 w-10 items-center justify-center rounded-md border transition-colors duration-300"
+            style={{ color: activeTheme.text, borderColor: `${activeTheme.accent}66` }}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              {menuOpen ? (
+                <path d="M6 6l12 12M18 6L6 18" />
+              ) : (
+                <path d="M4 7h16M4 12h16M4 17h16" />
+              )}
+            </svg>
+          </button>
         </div>
+
+        {/* Mobile dropdown — mirrors the desktop nav links. Closes on
+            selection (see scrollToSection). */}
+        {menuOpen && (
+          <nav className="md:hidden border-t px-6 py-3 flex flex-col gap-1" style={{ borderColor: `${activeTheme.accent}33` }}>
+            {sectionsData.map((section, idx) => (
+              <button
+                key={section.id}
+                onClick={() => scrollToSection(section.id)}
+                className="text-left text-sm uppercase tracking-widest font-medium py-2.5 transition-colors duration-300"
+                style={{
+                  color: activeSection === idx ? activeTheme.accent : activeTheme.text,
+                  opacity: activeSection === idx ? 1 : 0.7,
+                }}
+              >
+                {section.navLabel}
+              </button>
+            ))}
+            <Link
+              href="/contact"
+              className="mt-2 text-center px-6 py-3 rounded-full text-xs uppercase tracking-[0.15em] font-semibold text-white"
+              style={{ backgroundColor: activeTheme.accent }}
+            >
+              Contact
+            </Link>
+          </nav>
+        )}
       </header>
 
       {/* Draggable scroll rail. Replaces the previous dot indicator: it keeps
