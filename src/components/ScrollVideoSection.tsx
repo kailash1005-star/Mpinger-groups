@@ -45,6 +45,13 @@ interface ScrollVideoSectionProps {
   mobileVideoSrc?: string;
   /** First-frame still, shown instantly so there's never a black flash while the video buffers */
   posterSrc?: string;
+  /**
+   * How the clip fills the viewport. "cover" (default) is full-bleed but crops
+   * the top and bottom of a 16:9 source on wide screens. Use "contain" when the
+   * subject is framed edge-to-edge and that crop would cut it off — the whole
+   * frame stays visible and the gaps fall back to `backgroundColor`.
+   */
+  videoFit?: "cover" | "contain";
   backgroundColor: string;
   theme: SectionTheme;
   title: string;
@@ -155,6 +162,7 @@ export const ScrollVideoSection: React.FC<ScrollVideoSectionProps> = ({
   videoSrc,
   mobileVideoSrc,
   posterSrc,
+  videoFit = "cover",
   backgroundColor,
   theme,
   title,
@@ -444,7 +452,13 @@ export const ScrollVideoSection: React.FC<ScrollVideoSectionProps> = ({
             webkit-playsinline="true"
             aria-hidden="true"
             tabIndex={-1}
-            className="absolute inset-0 w-full h-full object-cover"
+            // "contain" is a desktop-only concern: the crop it avoids is caused
+            // by a wide viewport against a 16:9 source. Phones get the portrait
+            // encode, which fills a tall screen without cropping the subject, so
+            // they stay on "cover" — contained there would just add dead bands.
+            className={`absolute inset-0 w-full h-full object-cover ${
+              videoFit === "contain" ? "md:object-contain" : ""
+            }`}
             style={{
               pointerEvents: "none",
               backgroundColor,

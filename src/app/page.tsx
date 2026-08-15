@@ -15,6 +15,7 @@ interface SectionData {
   videoSrc: string;
   mobileVideoSrc: string;
   posterSrc: string;
+  videoFit?: "cover" | "contain";
   backgroundColor: string;
   theme: SectionTheme;
   title: string;
@@ -347,6 +348,7 @@ export default function Home() {
             videoSrc={section.videoSrc}
             mobileVideoSrc={section.mobileVideoSrc}
             posterSrc={section.posterSrc}
+            videoFit={section.videoFit}
             backgroundColor={section.backgroundColor}
             theme={section.theme}
             title={section.title}
