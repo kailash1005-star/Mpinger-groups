@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { organisation } from "@/lib/site";
 
 export const metadata: Metadata = {

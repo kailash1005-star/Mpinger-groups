@@ -1,24 +1,25 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import {
   ScrollVideoSection,
   type BrandLink,
   type SectionTheme,
 } from "@/components/ScrollVideoSection";
 import { ScrollRail } from "@/components/ScrollRail";
+import { useTranslations } from "next-intl";
 
 interface SectionData {
   id: string;
-  navLabel: string;
+  translationKey: "group" | "kokosflora" | "engineering" | "technology";
   videoSrc: string;
   mobileVideoSrc: string;
   posterSrc: string;
   videoFit?: "cover" | "contain";
   backgroundColor: string;
   theme: SectionTheme;
-  title: string;
+  title?: string;
   description?: string;
   keywords?: string[];
   brands?: BrandLink[];
@@ -28,7 +29,7 @@ interface SectionData {
 const sectionsData: SectionData[] = [
   {
     id: "group",
-    navLabel: "Group",
+    translationKey: "group",
     videoSrc: "/videos/section-1.mp4",
     mobileVideoSrc: "/videos/mobile/section-1.mp4",
     posterSrc: "/videos/posters/section-1.webp",
@@ -39,15 +40,11 @@ const sectionsData: SectionData[] = [
       accent: "#8ab4ff",
       scrim: "dark",
     },
-    title: "German standards. Indian scale.",
-    description:
-      "Four specialist companies under one group: precision machined components, peat-free growing media, compact construction machinery and enterprise AI — manufactured at Indian scale, specified and quality-assured from Hannover.",
-    keywords: ["Hannover HQ", "India", "Peru", "Mexico"],
     align: "center",
   },
   {
     id: "kokosflora",
-    navLabel: "Kokosflora",
+    translationKey: "kokosflora",
     videoSrc: "/videos/kokosflora-coir-lifecycle.mp4",
     mobileVideoSrc: "/videos/mobile/kokosflora-coir-lifecycle.mp4",
     posterSrc: "/videos/posters/kokosflora-coir-lifecycle.webp",
@@ -61,10 +58,6 @@ const sectionsData: SectionData[] = [
       // the produce/plants stay vivid behind the copy.
       scrimStrength: "soft",
     },
-    title: "Peat-free growing media, made from coconut husk.",
-    description:
-      "Kokosflora turns coconut husk — a by-product of food agriculture — into renewable coir substrate for professional horticulture. Produced in India, warehoused in Germany for short EU lead times.",
-    keywords: ["Peat-free", "100% renewable", "EU stock in Germany"],
     brands: [
       {
         name: "Kokosflora",
@@ -77,7 +70,7 @@ const sectionsData: SectionData[] = [
   },
   {
     id: "engineering",
-    navLabel: "Engineering",
+    translationKey: "engineering",
     videoSrc: "/videos/section-3.mp4",
     mobileVideoSrc: "/videos/mobile/section-3.mp4",
     posterSrc: "/videos/posters/section-3.webp",
@@ -88,10 +81,6 @@ const sectionsData: SectionData[] = [
       accent: "#e2551c",
       scrim: "light",
     },
-    title: "Precision components, machined to European tolerance.",
-    description:
-      "The group's founding business. mpinger delivers CNC-turned and milled parts, castings, sheet metal and surface finishing from Indian production to European industry — with Hanox supplying compact construction machinery to the same standard.",
-    keywords: ["5-axis CNC", "Casting & sheet metal", "Surface treatment"],
     brands: [
       {
         name: "mpinger",
@@ -110,7 +99,7 @@ const sectionsData: SectionData[] = [
   },
   {
     id: "technology",
-    navLabel: "AI",
+    translationKey: "technology",
     videoSrc: "/videos/section-4.mp4",
     mobileVideoSrc: "/videos/mobile/section-4.mp4",
     posterSrc: "/videos/posters/section-4.webp",
@@ -122,10 +111,6 @@ const sectionsData: SectionData[] = [
       scrim: "dark",
       scrimStrength: "strong",
     },
-    title: "Enterprise AI, past the pilot stage.",
-    description:
-      "mpasys takes AI from proof-of-concept to systems people actually use — data foundations, honest evaluation, and integration into the workflows a business already runs on.",
-    keywords: ["Production deployment", "Data & evaluation", "Workflow integration"],
     brands: [
       {
         name: "mpasys",
@@ -140,8 +125,6 @@ const sectionsData: SectionData[] = [
 
 // Stable reference for the rail — it measures section offsets in an effect
 // keyed on this array, so a new one per render would re-measure in a loop.
-const railSections = sectionsData.map(({ id, navLabel }) => ({ id, navLabel }));
-
 // Check if a hex background color is dark (for glassy header/nav surfaces)
 const isDarkColor = (hex: string) => {
   const color = hex.replace("#", "");
@@ -154,6 +137,12 @@ const isDarkColor = (hex: string) => {
 };
 
 export default function Home() {
+  const t = useTranslations("home");
+  const nav = useTranslations("nav");
+  const railSections = sectionsData.map(({ id, translationKey }) => ({
+    id,
+    navLabel: nav(translationKey === "technology" ? "ai" : translationKey),
+  }));
   const [activeSection, setActiveSection] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -197,6 +186,7 @@ export default function Home() {
   };
 
   const active = sectionsData[activeSection];
+  const activeCopy = t.raw(`sections.${active.translationKey}`) as { title: string; description: string; keyword1: string; keyword2: string; keyword3: string; keyword4?: string };
   const activeTheme = active.theme;
   const isThemeDark = isDarkColor(active.backgroundColor);
   // Solid, legible nav surface: an opaque white bar with dark text, replacing
@@ -254,7 +244,7 @@ export default function Home() {
                     activeSection === idx ? activeTheme.accent : navText,
                 }}
               >
-                {section.navLabel}
+                {nav(section.translationKey === "technology" ? "ai" : section.translationKey)}
               </button>
             ))}
           </nav>
@@ -303,7 +293,7 @@ export default function Home() {
             selection (see scrollToSection). */}
         {menuOpen && (
           <nav className="md:hidden bg-white shadow-xl border-t px-6 py-3 flex flex-col gap-1" style={{ borderColor: `${activeTheme.accent}33` }}>
-            {sectionsData.map((section, idx) => (
+              {sectionsData.map((section, idx) => (
               <button
                 key={section.id}
                 onClick={() => scrollToSection(section.id)}
@@ -313,7 +303,7 @@ export default function Home() {
                   opacity: activeSection === idx ? 1 : 0.7,
                 }}
               >
-                {section.navLabel}
+                  {nav(section.translationKey === "technology" ? "ai" : section.translationKey)}
               </button>
             ))}
             <Link
@@ -351,9 +341,9 @@ export default function Home() {
             videoFit={section.videoFit}
             backgroundColor={section.backgroundColor}
             theme={section.theme}
-            title={section.title}
-            description={section.description}
-            keywords={section.keywords}
+            title={(t.raw(`sections.${section.translationKey}`) as typeof activeCopy).title}
+            description={(t.raw(`sections.${section.translationKey}`) as typeof activeCopy).description}
+            keywords={Object.values(t.raw(`sections.${section.translationKey}`) as typeof activeCopy).filter((value) => typeof value === "string").slice(1)}
             brands={section.brands}
             align={section.align}
             sectionHeight={idx === 0 ? "260vh" : "400vh"}
@@ -373,7 +363,7 @@ export default function Home() {
             className="text-xs tracking-wider opacity-50 font-light"
             style={{ color: footerTextColor }}
           >
-            © {new Date().getFullYear()} Mpinger Groups. All rights reserved.
+            © {new Date().getFullYear()} Mpinger Groups. {t("footer")}
           </p>
           <a
             href="mailto:info@mpinger.de"
@@ -391,11 +381,11 @@ export default function Home() {
               className="text-xs tracking-wider opacity-50 hover:opacity-100 transition-opacity duration-300 font-light"
               style={{ color: footerTextColor }}
             >
-              Contact
+              {nav("contact")}
             </Link>
             {[
-              { label: "Impressum", href: "/impressum" },
-              { label: "Datenschutz", href: "/datenschutz" },
+                { label: nav("imprint"), href: "/impressum" },
+                { label: nav("privacy"), href: "/datenschutz" },
             ].map((item) => (
               <Link
                 key={item.href}

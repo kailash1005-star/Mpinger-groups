@@ -3,6 +3,8 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { ArrowUpRight, Check, LoaderCircle, Mail } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { organisation } from "@/lib/site";
 
 // Web3Forms access keys are designed to be public, so this is safe to inline in
@@ -36,11 +38,11 @@ const SUBMIT_BUTTON_CLASS =
  * that actually reaches someone, not an apology.
  */
 function DirectContactFallback() {
+  const t = useTranslations("form");
   return (
     <div className="space-y-6">
       <p className="text-base leading-7 text-[#44474d]">
-        Our enquiry form is being set up. Email us directly and we&apos;ll come
-        straight back to you.
+        {t("fallback")}
       </p>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
         <a
@@ -65,6 +67,7 @@ function DirectContactFallback() {
 }
 
 export function ContactForm() {
+  const t = useTranslations("form");
   const [state, setState] = useState<FormState>("idle");
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -123,7 +126,7 @@ export function ContactForm() {
       <div className="grid gap-7 sm:grid-cols-2">
         <label className="block">
           <span className="contact-label">
-            Your name <span aria-hidden="true">*</span>
+            {t("name")} <span aria-hidden="true">*</span>
           </span>
           <input
             className="contact-input"
@@ -135,7 +138,7 @@ export function ContactForm() {
         </label>
         <label className="block">
           <span className="contact-label">
-            Work email <span aria-hidden="true">*</span>
+            {t("email")} <span aria-hidden="true">*</span>
           </span>
           <input
             className="contact-input"
@@ -149,7 +152,7 @@ export function ContactForm() {
 
       <div className="grid gap-7 sm:grid-cols-2">
         <label className="block">
-          <span className="contact-label">Company</span>
+          <span className="contact-label">{t("company")}</span>
           <input
             className="contact-input"
             type="text"
@@ -158,29 +161,29 @@ export function ContactForm() {
           />
         </label>
         <label className="block">
-          <span className="contact-label">What can we help with?</span>
+          <span className="contact-label">{t("interest")}</span>
           <select className="contact-input" name="interest" defaultValue="">
             <option value="" disabled>
-              Select a focus
+              {t("selectFocus")}
             </option>
-            <option value="Precision components">Precision components</option>
-            <option value="Growing media">Growing media</option>
-            <option value="Construction machinery">Construction machinery</option>
-            <option value="Enterprise AI">Enterprise AI</option>
-            <option value="Something else">Something else</option>
+            <option value="Precision components">{t("precision")}</option>
+            <option value="Growing media">{t("growingMedia")}</option>
+            <option value="Construction machinery">{t("machinery")}</option>
+            <option value="Enterprise AI">{t("enterpriseAi")}</option>
+            <option value="Something else">{t("somethingElse")}</option>
           </select>
         </label>
       </div>
 
       <label className="block">
         <span className="contact-label">
-          Your message <span aria-hidden="true">*</span>
+          {t("yourMessage")} <span aria-hidden="true">*</span>
         </span>
         <textarea
           className="contact-input min-h-36 resize-y"
           name="message"
           required
-          placeholder="Tell us what you are building, sourcing or solving."
+          placeholder={t("message")}
         />
       </label>
 
@@ -193,14 +196,13 @@ export function ContactForm() {
 
       <div className="flex flex-col gap-5 border-t border-neutral-900/10 pt-7 sm:flex-row sm:items-center sm:justify-between">
         <p className="max-w-sm text-xs leading-relaxed text-[#44474d]">
-          By sending this message, you agree that we may use your details to
-          respond to your enquiry. See our{" "}
-          <a
+           {t("privacy")} {" "}
+           <Link
             className="underline underline-offset-2 transition-colors hover:text-[#e2551c]"
-            href="/datenschutz"
+             href="/datenschutz"
           >
-            Datenschutzerkl&auml;rung
-          </a>
+             {t("privacyLink")}
+           </Link>
           .
         </p>
         <button
@@ -211,7 +213,7 @@ export function ContactForm() {
           {state === "sending" ? (
             <LoaderCircle className="h-4 w-4 animate-spin" />
           ) : (
-            "Send enquiry"
+             t("send")
           )}
           {state !== "sending" && (
             <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
@@ -222,8 +224,7 @@ export function ContactForm() {
       <div aria-live="polite" role="status">
         {state === "success" && (
           <p className="flex items-center gap-2 text-sm text-[#2e7d4f]">
-            <Check className="h-4 w-4" /> Message received. We&apos;ll be in
-            touch soon.
+             <Check className="h-4 w-4" /> {t("success")}
           </p>
         )}
         {state === "error" && (

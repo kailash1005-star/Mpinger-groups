@@ -1,0 +1,23 @@
+{
+  "metadata": {
+    "title": "Mpinger Groups — Precision Manufacturing, Peat-Free Substrates & Enterprise AI",
+    "description": "Indo-German group delivering CNC precision components, peat-free coir substrates, compact construction machinery and enterprise AI. Indian scale, German specification.",
+    "contactTitle": "Contact",
+    "contactDescription": "Start a conversation with Mpinger Groups about engineering, growing media, machinery or enterprise AI."
+  },
+  "language": { "label": "Language", "de": "German", "en": "English", "fr": "French", "es": "Spanish" },
+  "a11y": { "skipToContent": "Skip to content", "switchLanguage": "Switch language" },
+  "nav": { "group": "Group", "kokosflora": "Kokosflora", "engineering": "Engineering", "ai": "AI", "contact": "Contact", "imprint": "Legal notice", "privacy": "Privacy" },
+  "home": {
+    "sections": {
+      "group": { "title": "German standards. Indian scale.", "description": "Four specialist companies under one group: precision machined components, peat-free growing media, compact construction machinery and enterprise AI — manufactured at Indian scale, specified and quality-assured from Hannover.", "keyword1": "Hannover HQ", "keyword2": "India", "keyword3": "Peru", "keyword4": "Mexico" },
+      "kokosflora": { "title": "Peat-free growing media, made from coconut husk.", "description": "Kokosflora turns coconut husk — a by-product of food agriculture — into renewable coir substrate for professional horticulture. Produced in India, warehoused in Germany for short EU lead times.", "keyword1": "Peat-free", "keyword2": "100% renewable", "keyword3": "EU stock in Germany" },
+      "engineering": { "title": "Precision components, machined to European tolerance.", "description": "The group's founding business. mpinger delivers CNC-turned and milled parts, castings, sheet metal and surface finishing from Indian production to European industry — with Hanox supplying compact construction machinery to the same standard.", "keyword1": "5-axis CNC", "keyword2": "Casting & sheet metal", "keyword3": "Surface treatment" },
+      "technology": { "title": "Enterprise AI, past the pilot stage.", "description": "mpasys takes AI from proof-of-concept to systems people actually use — data foundations, honest evaluation, and integration into the workflows a business already runs on.", "keyword1": "Production deployment", "keyword2": "Data & evaluation", "keyword3": "Workflow integration" }
+    },
+    "footer": "All rights reserved."
+  },
+  "contact": { "eyebrow": "Let's make it precise", "title": "Bring us the hard part.", "description": "Whether it is a component that needs to hold tolerance, a substrate that needs to travel well, or an AI system that needs to work in the real world, start with the brief.", "directLine": "Direct line", "formTitle": "Tell us what's next.", "required": "All fields marked * required" },
+  "form": { "name": "Name", "email": "Work email", "company": "Company", "projectType": "Project type", "selectRequirement": "Select a requirement", "milling": "5-axis milling", "turning": "Turning / mill-turn", "prototype": "Prototype or series", "quality": "Quality inspection", "other": "Other", "interest": "What can we help with?", "selectFocus": "Select a focus", "precision": "Precision components", "growingMedia": "Growing media", "machinery": "Construction machinery", "enterpriseAi": "Enterprise AI", "somethingElse": "Something else", "yourMessage": "Your message", "message": "Tell us what you are building, sourcing or solving.", "privacy": "By sending this message, you agree that we may use your details to respond to your enquiry. See our", "privacyLink": "privacy notice", "fallback": "Our enquiry form is being set up. Email us directly and we'll come straight back to you.", "send": "Send enquiry", "sending": "Sending...", "success": "Message received. We'll be in touch soon.", "fallbackError": "The message could not be sent. Please email us directly." },
+  "legal": { "back": "Mpinger Groups", "provider": "Provider", "representedBy": "Represented by", "contact": "Contact", "phone": "Phone", "email": "Email", "register": "Register entry", "court": "Register court", "number": "Registration number", "vat": "VAT identification number", "responsible": "Responsible for content under § 18 (2) MStV", "dispute": "Dispute resolution", "liabilityContent": "Liability for content", "liabilityLinks": "Liability for links", "copyright": "Copyright", "privacyTitle": "Privacy policy", "serverLogs": "Server log files", "cookies": "Cookies and tracking", "hosting": "Hosting and data processing", "external": "External content, fonts and media", "rights": "Your rights", "complaint": "Right to complain", "ssl": "SSL/TLS encryption" }
+}

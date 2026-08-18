@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { getLocale, getTranslations } from "next-intl/server";
 import "./globals.css";
 import { siteUrl, siteName, siteDescription, organisation, brands } from "@/lib/site";
 
@@ -150,14 +151,22 @@ const websiteJsonLd = {
   publisher: { "@id": `${siteUrl}/#organization` },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // This layout is above the [locale] segment and has no params to read, so
+  // getLocale() resolves the locale the proxy negotiated. Previously lang was
+  // pinned to "en", so a DE/FR/ES page still announced itself as English to
+  // assistive tech and search engines. getTranslations works in this server
+  // layout even though it sits above NextIntlClientProvider.
+  const locale = await getLocale();
+  const t = await getTranslations("a11y");
+
   return (
     <html
-      lang="en"
+      lang={locale}
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
@@ -191,7 +200,7 @@ export default function RootLayout({
           href="#group"
           className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:rounded-full focus:bg-white focus:px-5 focus:py-2.5 focus:text-sm focus:font-semibold focus:text-black focus:shadow-lg"
         >
-          Skip to content
+          {t("skipToContent")}
         </a>
         {children}
       </body>
